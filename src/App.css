@@ -3,6 +3,7 @@ body {
   margin: 0;
   font-family: "Inter", sans-serif;
   transition: background 0.5s, color 0.5s;
+  box-sizing: border-box;
 }
 
 /* Contenedor principal */
@@ -21,23 +22,40 @@ body {
   color: #f5f5f5;
 }
 
-/* Contenido principal ajustado al sidebar */
+/* Contenido principal adaptativo */
 .main-content {
   flex-grow: 1;
-  margin-left: 270px; /* ancho del sidebar */
   padding: 60px;
-  transition: margin 0.4s ease, color 0.5s ease;
+  transition: margin-left 0.4s ease;
+  box-sizing: border-box;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .main-content {
-    margin-left: 0;
-    padding: 40px 20px;
-  }
+/* Con sidebar abierto */
+.main-content.with-sidebar {
+  margin-left: 240px; /* ancho del sidebar abierto */
 }
 
-/* ======== Toggle switch con animación más lenta al presionar ======== */
+/* Con sidebar colapsado */
+.main-content.collapsed-sidebar {
+  margin-left: 85px; /* ancho del sidebar cerrado */
+}
+
+/* Con sidebar oculto totalmente */
+.main-content.hidden-sidebar {
+  margin-left: 0; /* ocupa todo el ancho */
+}
+
+/* Vistas internas */
+.view-container {
+  flex-grow: 1;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: all 0.5s ease;
+}
+
+/* ======== Toggle switch ======== */
 .theme-toggle {
   position: fixed;
   top: 8px;
@@ -54,7 +72,7 @@ body {
   display: flex;
   align-items: center;
   padding: 3px;
-  transition: background 3.5s ease; /* más lenta al cambiar modo */
+  transition: background 3.5s ease;
 }
 
 .toggle-track.dark {
@@ -71,20 +89,16 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 14px;
-  transition: transform 3.5s ease, background 3.5s ease; /* más lenta al cambiar modo */
+  transition: transform 3.5s ease, background 3.5s ease;
   position: relative;
+  color: #FFA500;
 }
 
 .toggle-thumb.dark {
   background: #f5f5f5;
-  color: #FFD700; /* Moon siempre visible */
+  color: #FFD700;
 }
 
-.toggle-thumb {
-  color: #FFA500; /* Sun siempre visible */
-}
-
-/* Líneas animadas dentro del thumb (opcional, más lento) */
 .toggle-thumb::before,
 .toggle-thumb::after {
   content: "";
@@ -93,9 +107,9 @@ body {
   height: 2px;
   top: 50%;
   left: -25%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
   transform: rotate(45deg);
-  animation: move-lines 8s linear infinite; /* más lento que antes */
+  animation: move-lines 8s linear infinite;
 }
 
 .toggle-thumb::after {
@@ -104,6 +118,25 @@ body {
 }
 
 @keyframes move-lines {
-  0% { transform: translateX(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) rotate(45deg); }
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+/* ======== Responsive ======== */
+@media (max-width: 768px) {
+  .main-content,
+  .main-content.with-sidebar,
+  .main-content.collapsed-sidebar,
+  .main-content.hidden-sidebar {
+    margin-left: 0;
+    padding: 40px 20px;
+  }
+
+  .view-container {
+    padding: 20px 10px;
+  }
 }

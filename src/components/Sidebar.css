@@ -1,5 +1,4 @@
-/* === Sidebar con efecto vidrio profesional === */
-
+/* Sidebar abierto y cerrado */
 .sidebar {
   position: fixed;
   left: 20px;
@@ -14,12 +13,19 @@
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(15px);
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-  transition: width 0.4s ease, background 0.4s ease, color 0.4s ease;
+  transition: width 0.4s ease, padding 0.4s ease, background 0.4s ease;
   overflow: hidden;
 }
 
 .sidebar.open {
   width: 240px;
+}
+
+.sidebar.hidden {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: width 0.4s ease, padding 0.4s ease;
 }
 
 /* Modo oscuro */
@@ -117,6 +123,14 @@
   .sidebar.open {
     width: 90%;
   }
+
+  .sidebar.hidden {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+    transition: width 0.4s ease, padding 0.4s ease;
+  }
+
 
   .menu-list {
     flex-direction: row;

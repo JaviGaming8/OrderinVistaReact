@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Home,
   ShoppingBag,
@@ -11,11 +11,7 @@ import {
 } from "lucide-react";
 import "./Sidebar.css";
 
-const Sidebar = ({ darkMode, onSelectView }) => {
-  const [open, setOpen] = useState(true);
-
-  const toggleSidebar = () => setOpen(!open);
-
+const Sidebar = ({ darkMode, onSelectView, open, toggleSidebar }) => {
   const menuItems = [
     { icon: <Home size={22} />, label: "Inicio" },
     { icon: <ShoppingBag size={22} />, label: "Pedidos" },
@@ -26,7 +22,7 @@ const Sidebar = ({ darkMode, onSelectView }) => {
   ];
 
   return (
-    <div className={`sidebar ${open ? "open" : ""} ${darkMode ? "dark" : ""}`}>
+    <div className={`sidebar ${open ? "open" : "collapsed"} ${darkMode ? "dark" : ""}`}>
       <div className="sidebar-header">
         <button className="menu-btn" onClick={toggleSidebar}>
           <Menu size={24} />
@@ -38,7 +34,7 @@ const Sidebar = ({ darkMode, onSelectView }) => {
           <li
             key={index}
             className="menu-item"
-            onClick={() => onSelectView(item.label)} // 👈 cambio de vista
+            onClick={() => onSelectView(item.label)}
           >
             {item.icon}
             {open && <span>{item.label}</span>}

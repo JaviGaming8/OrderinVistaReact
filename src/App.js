@@ -7,9 +7,11 @@ import "./App.css";
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-  const [activeView, setActiveView] = useState("Inicio"); // vista por defecto
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeView, setActiveView] = useState("Inicio");
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
+  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   const renderView = () => {
     switch (activeView) {
@@ -23,24 +25,27 @@ function App() {
 
   return (
     <div className={`app-container ${darkMode ? "dark" : ""}`}>
-      {/* Botón flotante para modo oscuro */}
+      {/* Toggle modo oscuro */}
       <div className="theme-toggle" onClick={toggleDarkMode}>
         <div className={`toggle-track ${darkMode ? "dark" : ""}`}>
           <div className={`toggle-thumb ${darkMode ? "dark" : ""}`}>
-            {darkMode ? (
-              <Moon color="#FFD700" size={20} />
-            ) : (
-              <Sun color="#FFA500" size={20} />
-            )}
+            {darkMode ? <Moon color="#FFD700" size={20} /> : <Sun color="#FFA500" size={20} />}
           </div>
         </div>
       </div>
 
-      {/* Sidebar con función de cambio */}
-      <Sidebar darkMode={darkMode} onSelectView={setActiveView} />
+      {/* Sidebar */}
+      <Sidebar
+        darkMode={darkMode}
+        onSelectView={setActiveView}
+        open={sidebarOpen}
+        toggleSidebar={toggleSidebar} // se controla desde el botón interno
+      />
 
       {/* Contenido principal */}
-      <main className="main-content">{renderView()}</main>
+      <main className={`main-content ${sidebarOpen ? "with-sidebar" : "collapsed-sidebar"}`}>
+        {renderView()}
+      </main>
     </div>
   );
 }
