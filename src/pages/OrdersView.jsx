@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Search, Plus, Trash2, Edit, Eye, X, ChevronLeft } from "lucide-react";
+import Swal from "sweetalert2";
 import "./OrdersView.css";
 
 function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
@@ -34,6 +35,12 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
       setOrders(data);
     } catch (err) {
       console.error("Error cargando pedidos:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudieron cargar los pedidos",
+        confirmButtonColor: "#e74c3c",
+      });
     }
   };
 
@@ -55,11 +62,22 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
         body: JSON.stringify(orderData),
       });
       if (res.ok) {
-        alert("Pedido creado exitosamente");
+        Swal.fire({
+          icon: "success",
+          title: "Pedido creado",
+          text: "El pedido se creó exitosamente",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         setShowModal(false);
         fetchAllOrders();
       } else {
-        alert("Error al crear el pedido");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo crear el pedido",
+          confirmButtonColor: "#e74c3c",
+        });
       }
     } catch (err) {
       console.error("Error creando pedido:", err);
@@ -74,11 +92,22 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
         body: JSON.stringify(orderData),
       });
       if (res.ok || res.status === 204) {
-        alert("Pedido actualizado exitosamente");
+        Swal.fire({
+          icon: "success",
+          title: "Pedido actualizado",
+          text: "El pedido fue actualizado correctamente",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         setShowModal(false);
         fetchAllOrders();
       } else {
-        alert("Error al actualizar el pedido");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo actualizar el pedido",
+          confirmButtonColor: "#e74c3c",
+        });
       }
     } catch (err) {
       console.error("Error actualizando pedido:", err);
@@ -86,16 +115,39 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
   };
 
   const deleteOrder = async (id) => {
-    if (!window.confirm("¿Estás seguro de eliminar este pedido?")) return;
+    const result = await Swal.fire({
+      title: "¿Eliminar pedido?",
+      text: "Esta acción no se puede deshacer.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       const res = await fetch(`http://localhost:32770/api/v1/Order/${id}`, {
         method: "DELETE",
       });
       if (res.ok || res.status === 204) {
-        alert("Pedido eliminado exitosamente");
+        Swal.fire({
+          icon: "success",
+          title: "Pedido eliminado",
+          text: "El pedido fue eliminado exitosamente",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         fetchAllOrders();
       } else {
-        alert("Error al eliminar el pedido");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "No se pudo eliminar el pedido",
+          confirmButtonColor: "#e74c3c",
+        });
       }
     } catch (err) {
       console.error("Error eliminando pedido:", err);
@@ -172,7 +224,15 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!isFormValid) return alert("Por favor completa todos los campos");
+    if (!isFormValid) {
+      Swal.fire({
+        icon: "warning",
+        title: "Campos incompletos",
+        text: "Por favor completa todos los campos antes de continuar",
+        confirmButtonColor: "#f39c12",
+      });
+      return;
+    }
     modalMode === "create" ? createOrder(formData) : updateOrder(formData);
   };
 
@@ -331,7 +391,6 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
       {showDetails && selectedOrder && (
         <div className="details-overlay" onClick={() => setShowDetails(false)}>
           <div className="details-panel" onClick={(e) => e.stopPropagation()}>
-            {/* HEADER DEL PANEL */}
             <div className="details-header">
               <button
                 className="back-button"
@@ -348,12 +407,9 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
               </button>
             </div>
 
-            {/* BADGE DEL ID */}
             <div className="order-badge">Pedido #{selectedOrder.id}</div>
 
-            {/* GRID DE CARDS */}
             <div className="details-cards">
-              {/* CARD 1 - INFORMACIÓN PERSONAL */}
               <div className="details-card personal">
                 <h3>Información Personal</h3>
                 <div className="detail-field">
@@ -372,7 +428,6 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
                 </div>
               </div>
 
-              {/* CARD 2 - DIRECCIÓN DE ENVÍO */}
               <div className="details-card shipping">
                 <h3>Dirección de Envío</h3>
                 <div className="detail-field">
@@ -393,7 +448,6 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
                 </div>
               </div>
 
-              {/* CARD 3 - INFORMACIÓN DE PAGO */}
               <div className="details-card payment">
                 <h3>Información de Pago</h3>
                 <div className="detail-field">
