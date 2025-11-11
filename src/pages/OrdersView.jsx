@@ -30,7 +30,7 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
   // ==================== API ====================
   const fetchAllOrders = async () => {
     try {
-      const res = await fetch("http://localhost:32770/api/v1/Order/all");
+      const res = await fetch("http://localhost:8080/api/v1/Order");
       const data = await res.json();
       setOrders(data);
     } catch (err) {
@@ -46,7 +46,7 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
 
   const fetchOrdersByUsername = async (username) => {
     try {
-      const res = await fetch(`http://localhost:32770/api/v1/Order/${username}`);
+      const res = await fetch(`http://localhost:8080/api/v1/Order/${username}`);
       const data = await res.json();
       setOrders(data);
     } catch (err) {
@@ -56,7 +56,7 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
 
   const createOrder = async (orderData) => {
     try {
-      const res = await fetch("http://localhost:32770/api/v1/Order", {
+      const res = await fetch("http://localhost:8080/api/v1/Order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
@@ -86,7 +86,7 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
 
   const updateOrder = async (orderData) => {
     try {
-      const res = await fetch("http://localhost:32770/api/v1/Order", {
+      const res = await fetch("http://localhost:8080/api/v1/Order", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
@@ -129,7 +129,7 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:32770/api/v1/Order/${id}`, {
+      const res = await fetch(`http://localhost:8080/api/v1/Order/${id}`, {
         method: "DELETE",
       });
       if (res.ok || res.status === 204) {
