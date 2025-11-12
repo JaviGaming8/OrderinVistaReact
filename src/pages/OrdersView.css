@@ -1,5 +1,5 @@
 /* ==============================
-   CONTENEDOR PRINCIPAL
+   CONTENEDOR PRINCIPAL - ORDERS
 ============================== */
 .orders-container {
   display: flex;
@@ -7,7 +7,6 @@
   justify-content: flex-start;
   align-items: center;
 
-  /* separación desde arriba y centrado horizontal */
   margin-left: 85px;
   margin-top: 60px;
   padding: 1.5rem;
@@ -35,9 +34,9 @@
 }
 
 /* ==============================
-   HEADER Y ACCIONES
+   HEADER Y ACCIONES - ORDERS
 ============================== */
-.orders-header {
+.orders-container .orders-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -48,19 +47,20 @@
   gap: 1rem;
 }
 
-.orders-title {
+.orders-container .orders-title {
   font-size: 1.8rem;
   font-weight: 600;
   text-align: left;
+  margin: 0;
 }
 
-.orders-actions {
+.orders-container .orders-actions {
   display: flex;
   align-items: center;
   gap: 0.8rem;
 }
 
-.search-box {
+.orders-container .search-box {
   display: flex;
   align-items: center;
   background: rgba(255, 255, 255, 0.15);
@@ -70,16 +70,17 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.search-box input {
+.orders-container .search-box input {
   background: transparent;
   border: none;
   outline: none;
   color: inherit;
   margin-left: 0.5rem;
   width: 180px;
+  font-family: inherit;
 }
 
-.create-btn {
+.orders-container .create-btn {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -91,17 +92,18 @@
   cursor: pointer;
   font-weight: 500;
   transition: transform 0.2s, opacity 0.3s;
+  font-family: inherit;
 }
 
-.create-btn:hover {
+.orders-container .create-btn:hover {
   opacity: 0.9;
   transform: scale(1.03);
 }
 
 /* ==============================
-   TABLA DE PEDIDOS
+   TABLA DE PEDIDOS - ORDERS
 ============================== */
-.orders-table-container {
+.orders-container .orders-table-container {
   width: 90%;
   max-width: 1200px;
   border-radius: 20px;
@@ -111,96 +113,474 @@
   box-shadow: 0 8px 32px rgba(31, 38, 135, 0.25);
 }
 
-.orders-table {
+.orders-container .orders-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.orders-table th,
-.orders-table td {
+.orders-container .orders-table th,
+.orders-container .orders-table td {
   padding: 0.9rem;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.orders-table th {
+.orders-container .orders-table th {
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-.orders-table tbody tr:hover {
+.orders-container .orders-table tbody tr {
+  transition: all 0.3s ease;
+}
+
+.orders-container .orders-table tbody tr:hover {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(15px);
 }
 
-.total-price {
+.orders-container .total-price {
   font-weight: 600;
+  color: #10b981;
 }
 
-.actions {
+.orders-container .actions {
   display: flex;
   gap: 0.5rem;
 }
 
-.actions button {
+.orders-container .actions button {
   background: rgba(255, 255, 255, 0.2);
   border: none;
   border-radius: 10px;
-  padding: 0.3rem 0.4rem;
+  padding: 0.4rem 0.5rem;
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.actions button:hover {
-  background: rgba(255, 255, 255, 0.35);
-  transform: scale(1.05);
-}
-
-/* ==============================
-   MODALES Y DETALLES
-============================== */
-.modal-overlay,
-.details-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(10, 10, 10, 0.55);
-  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 90;
 }
 
-.modal,
-.details-panel {
-  background: rgba(255, 255, 255, 0.15);
+.orders-container .actions button:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.08);
+}
+
+.orders-container .btn-view {
+  color: #3b82f6;
+}
+
+.orders-container .btn-edit {
+  color: #f59e0b;
+}
+
+.orders-container .btn-delete {
+  color: #ef4444;
+}
+
+.orders-container .no-data {
+  padding: 3rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ==============================
+   MODAL OVERLAY - ORDERS
+============================== */
+.orders-container .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: ordersFadeIn 0.3s ease;
+}
+
+@keyframes ordersFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.orders-container .modal {
+  background: linear-gradient(135deg, rgba(30, 30, 40, 0.95), rgba(20, 20, 30, 0.95));
   backdrop-filter: blur(25px);
   border-radius: 20px;
   padding: 2rem;
   width: 95%;
   max-width: 720px;
+  max-height: 85vh;
+  overflow-y: auto;
   color: #fff;
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.35);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: ordersSlideUp 0.3s ease;
+}
+
+@keyframes ordersSlideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.orders-container .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.orders-container .modal-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #fff;
+}
+
+.orders-container .modal-close {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 10px;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.orders-container .modal-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: rotate(90deg);
+}
+
+.orders-container .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.orders-container .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.orders-container .form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.orders-container .form-group input,
+.orders-container .form-group select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.orders-container .form-group input:focus,
+.orders-container .form-group select:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.orders-container .form-group input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.orders-container .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.orders-container .cancel-btn,
+.orders-container .submit-btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 12px;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.orders-container .cancel-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.orders-container .cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.orders-container .submit-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+}
+
+.orders-container .submit-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
 }
 
 /* ==============================
-   RESPONSIVIDAD
+   DETALLES OVERLAY - ORDERS
+============================== */
+.orders-container .details-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: ordersFadeIn 0.3s ease;
+}
+
+.orders-container .details-panel {
+  background: linear-gradient(135deg, rgba(30, 30, 40, 0.95), rgba(20, 20, 30, 0.95));
+  backdrop-filter: blur(30px);
+  border-radius: 24px;
+  padding: 2rem;
+  width: 95%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  color: #fff;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: ordersSlideUp 0.3s ease;
+}
+
+.orders-container .details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.orders-container .details-header h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin: 0;
+  color: #fff;
+}
+
+.orders-container .back-button,
+.orders-container .close-button {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 12px;
+  padding: 0.6rem;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+.orders-container .back-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateX(-3px);
+}
+
+.orders-container .close-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: rotate(90deg);
+}
+
+.orders-container .order-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.orders-container .order-badge {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.orders-container .order-total-badge {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.orders-container .details-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.orders-container .details-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.orders-container .details-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.orders-container .card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.orders-container .card-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #fff;
+}
+
+.orders-container .details-card.personal .card-header {
+  color: #60a5fa;
+}
+
+.orders-container .details-card.shipping .card-header {
+  color: #34d399;
+}
+
+.orders-container .details-card.payment .card-header {
+  color: #fbbf24;
+}
+
+.orders-container .card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.orders-container .detail-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.orders-container .detail-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.orders-container .detail-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  margin: 0;
+  word-break: break-word;
+}
+
+/* ==============================
+   SCROLLBAR - ORDERS
+============================== */
+.orders-container .modal::-webkit-scrollbar,
+.orders-container .details-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.orders-container .modal::-webkit-scrollbar-track,
+.orders-container .details-panel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.orders-container .modal::-webkit-scrollbar-thumb,
+.orders-container .details-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.orders-container .modal::-webkit-scrollbar-thumb:hover,
+.orders-container .details-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==============================
+   RESPONSIVIDAD - ORDERS
 ============================== */
 @media (max-width: 1024px) {
-  .orders-header {
+  .orders-container .orders-header {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .orders-actions {
+  .orders-container .orders-actions {
     width: 100%;
     justify-content: space-between;
   }
 
-  .search-box input {
+  .orders-container .search-box input {
     width: 100%;
+  }
+
+  .orders-container .details-cards {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -211,15 +591,37 @@
     width: 100%;
   }
 
-  .orders-header,
-  .orders-table-container {
+  .orders-container .orders-header,
+  .orders-container .orders-table-container {
     width: 100%;
+  }
+
+  .orders-container .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .orders-container .order-info-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 480px) {
-  .modal,
-  .details-panel {
+  .orders-container .modal,
+  .orders-container .details-panel {
     padding: 1.2rem;
+    width: 98%;
+  }
+
+  .orders-container .orders-title {
+    font-size: 1.5rem;
+  }
+
+  .orders-container .details-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .orders-container .back-button span {
+    display: none;
   }
 }

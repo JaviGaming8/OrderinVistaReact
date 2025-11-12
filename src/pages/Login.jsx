@@ -57,7 +57,7 @@ const Login = ({ onLogin }) => {
     setError('');
 
     // Ruta específica de tu API
-    const url = 'http://localhost:8081/api/v1/Auth/login';
+    const url = 'http://localhost:8090/api/v1/Auth/login';
     const controller = new AbortController();
     abortRef.current = controller;
 
@@ -110,7 +110,7 @@ const Login = ({ onLogin }) => {
       if (err.name !== 'AbortError') {
         console.error('Error en el login:', err);
         if (err.name === 'TypeError' && err.message.includes('fetch')) {
-          setError('Error de conexión. Verifica que el servidor esté corriendo en http://localhost:8081');
+          setError('Error de conexión. Verifica que el servidor esté corriendo en http://localhost:8090');
         } else {
           setError('Error de conexión. Por favor, intenta nuevamente.');
         }

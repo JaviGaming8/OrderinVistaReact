@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Search, Plus, Trash2, Edit, Eye, X, ChevronLeft } from "lucide-react";
+import { Search, Plus, Trash2, Edit, Eye, X, ChevronLeft, User, MapPin, CreditCard } from "lucide-react";
 import Swal from "sweetalert2";
 import "./OrdersView.css";
 
@@ -24,13 +24,22 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
     cardNumber: "",
     expiration: "",
     cvv: "",
-    paymentMethod: 0,
+    payMentMethod: 0,
   });
+
+  // Generar UUID v4
+  const generateUUID = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  };
 
   // ==================== API ====================
   const fetchAllOrders = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/v1/Order/all");
+      const res = await fetch("http://localhost:8080/api/v1/Orders");
       const data = await res.json();
       setOrders(data);
     } catch (err) {
@@ -56,11 +65,18 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
 
   const createOrder = async (orderData) => {
     try {
-      const res = await fetch("http://localhost:4000/api/v1/Order", {
+      // Generar UUID automáticamente
+      const newOrder = {
+        ...orderData,
+        id: generateUUID()
+      };
+
+      const res = await fetch("http://localhost:8080/api/v1/Orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(newOrder),
       });
+      
       if (res.ok) {
         Swal.fire({
           icon: "success",
@@ -86,11 +102,12 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
 
   const updateOrder = async (orderData) => {
     try {
-      const res = await fetch("http://localhost:4000/api/v1/Order", {
+      const res = await fetch("http://localhost:8080/api/v1/Orders", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderData),
       });
+      
       if (res.ok || res.status === 204) {
         Swal.fire({
           icon: "success",
@@ -129,9 +146,10 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
     if (!result.isConfirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:4000/api/v1/Order/${id}`, {
+      const res = await fetch(`http://localhost:8080/api/v1/Orders/${id}`, {
         method: "DELETE",
       });
+      
       if (res.ok || res.status === 204) {
         Swal.fire({
           icon: "success",
@@ -191,7 +209,7 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
       cardNumber: "",
       expiration: "",
       cvv: "",
-      paymentMethod: 0,
+      payMentMethod: 0,
     });
     setShowModal(true);
   };
@@ -212,7 +230,7 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: ["totalPrice", "paymentMethod"].includes(name)
+      [name]: ["totalPrice", "payMentMethod"].includes(name)
         ? Number(value)
         : value,
     }));
@@ -280,7 +298,7 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
             <tbody>
               {filteredOrders.map((order) => (
                 <tr key={order.id}>
-                  <td>{order.id}</td>
+                  <td>{order.id?.substring(0, 8)}...</td>
                   <td>{order.userName}</td>
                   <td>
                     {order.firstName} {order.lastName}
@@ -336,53 +354,49 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
                 <X size={20} />
               </button>
             </div>
-
-            <div className="form-grid">
-              {Object.keys(formData).map(
-                (key) =>
-                  key !== "id" && (
-                    <div className="form-group" key={key}>
-                      <label>{key.replace(/([A-Z])/g, " $1").trim()}</label>
-                      {key === "paymentMethod" ? (
-                        <select
-                          name={key}
-                          value={formData[key]}
-                          onChange={handleInputChange}
-                        >
-                          <option value={0}>Tarjeta Crédito</option>
-                          <option value={1}>Tarjeta Débito</option>
-                          <option value={2}>Paypal</option>
-                        </select>
-                      ) : (
-                        <input
-                          type={["totalPrice"].includes(key) ? "number" : "text"}
-                          name={key}
-                          value={formData[key]}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      )}
-                    </div>
-                  )
-              )}
-            </div>
-
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="cancel-btn"
-                onClick={() => setShowModal(false)}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className="submit-btn"
-                onClick={handleSubmit}
-              >
-                {modalMode === "create" ? "Crear" : "Actualizar"}
-              </button>
-            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="form-grid">
+                {Object.keys(formData).map(
+                  (key) =>
+                    key !== "id" && (
+                      <div className="form-group" key={key}>
+                        <label>{key.replace(/([A-Z])/g, " $1").trim()}</label>
+                        {key === "payMentMethod" ? (
+                          <select
+                            name={key}
+                            value={formData[key]}
+                            onChange={handleInputChange}
+                          >
+                            <option value={0}>Tarjeta Crédito</option>
+                            <option value={1}>Tarjeta Débito</option>
+                            <option value={2}>Paypal</option>
+                          </select>
+                        ) : (
+                          <input
+                            type={["totalPrice"].includes(key) ? "number" : "text"}
+                            name={key}
+                            value={formData[key]}
+                            onChange={handleInputChange}
+                            required
+                          />
+                        )}
+                      </div>
+                    )
+                )}
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancelar
+                </button>
+                <button type="submit" className="submit-btn">
+                  {modalMode === "create" ? "Crear" : "Actualizar"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -407,74 +421,92 @@ function OrdersView({ darkMode = false, sidebarCollapsed = false }) {
               </button>
             </div>
 
-            <div className="order-badge">Pedido #{selectedOrder.id}</div>
+            <div className="order-info-header">
+              <div className="order-badge">
+                Pedido #{selectedOrder.id?.substring(0, 8)}
+              </div>
+              <div className="order-total-badge">
+                Total: ${selectedOrder.totalPrice}
+              </div>
+            </div>
 
             <div className="details-cards">
               <div className="details-card personal">
-                <h3>Información Personal</h3>
-                <div className="detail-field">
-                  <p className="detail-label">Usuario</p>
-                  <p className="detail-value">{selectedOrder.userName}</p>
+                <div className="card-header">
+                  <User size={20} />
+                  <h3>Información Personal</h3>
                 </div>
-                <div className="detail-field">
-                  <p className="detail-label">Nombre completo</p>
-                  <p className="detail-value">
-                    {selectedOrder.firstName} {selectedOrder.lastName}
-                  </p>
-                </div>
-                <div className="detail-field">
-                  <p className="detail-label">Email</p>
-                  <p className="detail-value">{selectedOrder.emailAddress}</p>
+                <div className="card-content">
+                  <div className="detail-field">
+                    <p className="detail-label">Usuario</p>
+                    <p className="detail-value">{selectedOrder.userName}</p>
+                  </div>
+                  <div className="detail-field">
+                    <p className="detail-label">Nombre completo</p>
+                    <p className="detail-value">
+                      {selectedOrder.firstName} {selectedOrder.lastName}
+                    </p>
+                  </div>
+                  <div className="detail-field">
+                    <p className="detail-label">Email</p>
+                    <p className="detail-value">{selectedOrder.emailAddress}</p>
+                  </div>
                 </div>
               </div>
 
               <div className="details-card shipping">
-                <h3>Dirección de Envío</h3>
-                <div className="detail-field">
-                  <p className="detail-label">Dirección</p>
-                  <p className="detail-value">{selectedOrder.addressLine}</p>
+                <div className="card-header">
+                  <MapPin size={20} />
+                  <h3>Dirección de Envío</h3>
                 </div>
-                <div className="detail-field">
-                  <p className="detail-label">País</p>
-                  <p className="detail-value">{selectedOrder.country}</p>
-                </div>
-                <div className="detail-field">
-                  <p className="detail-label">Estado</p>
-                  <p className="detail-value">{selectedOrder.state}</p>
-                </div>
-                <div className="detail-field">
-                  <p className="detail-label">Código Postal</p>
-                  <p className="detail-value">{selectedOrder.zipCode}</p>
+                <div className="card-content">
+                  <div className="detail-field">
+                    <p className="detail-label">Dirección</p>
+                    <p className="detail-value">{selectedOrder.addressLine}</p>
+                  </div>
+                  <div className="detail-field">
+                    <p className="detail-label">País</p>
+                    <p className="detail-value">{selectedOrder.country}</p>
+                  </div>
+                  <div className="detail-field">
+                    <p className="detail-label">Estado</p>
+                    <p className="detail-value">{selectedOrder.state}</p>
+                  </div>
+                  <div className="detail-field">
+                    <p className="detail-label">Código Postal</p>
+                    <p className="detail-value">{selectedOrder.zipCode}</p>
+                  </div>
                 </div>
               </div>
 
               <div className="details-card payment">
-                <h3>Información de Pago</h3>
-                <div className="detail-field">
-                  <p className="detail-label">Nombre en tarjeta</p>
-                  <p className="detail-value">{selectedOrder.cardName}</p>
+                <div className="card-header">
+                  <CreditCard size={20} />
+                  <h3>Información de Pago</h3>
                 </div>
-                <div className="detail-field">
-                  <p className="detail-label">Número de tarjeta</p>
-                  <p className="detail-value">{selectedOrder.cardNumber}</p>
-                </div>
-                <div className="detail-field">
-                  <p className="detail-label">Expiración</p>
-                  <p className="detail-value">{selectedOrder.expiration}</p>
-                </div>
-                <div className="detail-field">
-                  <p className="detail-label">CVV</p>
-                  <p className="detail-value">{selectedOrder.cvv}</p>
-                </div>
-                <div className="detail-field">
-                  <p className="detail-label">Método de pago</p>
-                  <p className="detail-value">
-                    {selectedOrder.paymentMethod === 0
-                      ? "Tarjeta Crédito"
-                      : selectedOrder.paymentMethod === 1
-                      ? "Tarjeta Débito"
-                      : "Paypal"}
-                  </p>
+                <div className="card-content">
+                  <div className="detail-field">
+                    <p className="detail-label">Nombre en tarjeta</p>
+                    <p className="detail-value">{selectedOrder.cardName}</p>
+                  </div>
+                  <div className="detail-field">
+                    <p className="detail-label">Número de tarjeta</p>
+                    <p className="detail-value">**** **** **** {selectedOrder.cardNumber?.slice(-4)}</p>
+                  </div>
+                  <div className="detail-field">
+                    <p className="detail-label">Expiración</p>
+                    <p className="detail-value">{selectedOrder.expiration}</p>
+                  </div>
+                  <div className="detail-field">
+                    <p className="detail-label">Método de pago</p>
+                    <p className="detail-value">
+                      {selectedOrder.payMentMethod === 0
+                        ? "Tarjeta Crédito"
+                        : selectedOrder.payMentMethod === 1
+                        ? "Tarjeta Débito"
+                        : "Paypal"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
