@@ -15,8 +15,8 @@ const Sidebar = ({ darkMode, onSelectView, open, toggleSidebar }) => {
   const menuItems = [
     { icon: <Home size={22} />, label: "Inicio" },
     { icon: <ShoppingBag size={22} />, label: "Pedidos" },
-    { icon: <Calendar size={22} />, label: "Agenda" },
     { icon: <MessageSquare size={22} />, label: "Mensajes" },
+    { icon: <Calendar size={22} />, label: "Agenda" },
     { icon: <BarChart size={22} />, label: "Reportes" },
     { icon: <Settings size={22} />, label: "Configuración" },
   ];
