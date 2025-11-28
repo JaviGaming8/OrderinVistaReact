@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import logo from '../assets/logo.png';
 import './Login.css';
 
 const Login = ({ onLogin }) => {
@@ -38,9 +37,9 @@ const Login = ({ onLogin }) => {
 
   const handleRegisterChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setRegisterData(prev => ({ 
-      ...prev, 
-      [name]: type === 'checkbox' ? checked : value 
+    setRegisterData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
     }));
     if (error) setError('');
   };
@@ -56,18 +55,14 @@ const Login = ({ onLogin }) => {
     setLoading(true);
     setError('');
 
-    // Ruta específica de tu API
     const url = 'http://localhost:8090/api/v1/Auth/login';
     const controller = new AbortController();
     abortRef.current = controller;
 
     try {
-      console.log('Enviando solicitud a:', url);
-      console.log('Datos enviados:', formData);
-
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
@@ -75,25 +70,18 @@ const Login = ({ onLogin }) => {
         signal: controller.signal
       });
 
-      console.log('Respuesta status:', response.status);
-      
       let payload;
       const text = await response.text();
-      console.log('Respuesta texto:', text);
-      
+
       try {
         payload = text ? JSON.parse(text) : {};
-        console.log('Payload parseado:', payload);
       } catch (parseError) {
-        console.error('Error parseando JSON:', parseError);
         payload = { message: text || 'Error en la respuesta del servidor' };
       }
 
       if (response.ok) {
-        console.log('Login exitoso:', payload);
         onLogin(payload.user || payload.data?.user, payload.token || payload.data?.token);
       } else {
-        console.error('Error en respuesta:', payload);
         if (response.status === 401) {
           setError(payload.message || 'Credenciales inválidas. Verifica usuario/contraseña.');
         } else if (response.status === 400) {
@@ -108,7 +96,6 @@ const Login = ({ onLogin }) => {
       }
     } catch (err) {
       if (err.name !== 'AbortError') {
-        console.error('Error en el login:', err);
         if (err.name === 'TypeError' && err.message.includes('fetch')) {
           setError('Error de conexión. Verifica que el servidor esté corriendo en http://localhost:8090');
         } else {
@@ -123,52 +110,55 @@ const Login = ({ onLogin }) => {
 
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!registerData.fullName || !registerData.email || !registerData.password || !registerData.confirmPassword) {
       setError('Por favor, completa todos los campos');
       return;
     }
-    
+
     if (registerData.password !== registerData.confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
     }
-    
+
     if (!registerData.acceptTerms) {
       setError('Debes aceptar los términos y condiciones');
       return;
     }
-    
+
     console.log('Datos de registro:', registerData);
     setError('');
-    alert('Registro exitoso (simulado)');
+    alert('Registro exitoso (simulación)');
   };
 
   return (
     <div className="login-container">
       {isLoginView ? (
-        // Vista de Login - Dos columnas
+        // Vista de inicio de sesión
         <div className="login-layout">
-          {/* Columna izquierda - Logo grande y título */}
+
+          {/* Panel izquierdo */}
           <div className="left-panel">
             <div className="left-content">
-              <img src={logo} alt="Logo" className="left-logo" />
+              <h2>¡Hola!<br />Bienvenido de nuevo</h2>
+              <p>Inicia sesión para continuar</p>
             </div>
           </div>
 
-          {/* Columna derecha - Formulario */}
+          {/* Panel derecho */}
           <div className="right-panel">
             <div className="login-card">
-              <h1 className="card-title">Bienvenido</h1>
+              <h1 className="card-title">Iniciar sesión</h1>
+              <p className="card-subtitle">Ingresa tus credenciales</p>
 
               <form className="login-form" onSubmit={handleSubmit} noValidate>
                 <div className="form-group">
-                  <label htmlFor="identificador" className="form-label">Username</label>
+                  <label htmlFor="identificador" className="form-label">Usuario</label>
                   <input
                     id="identificador"
                     type="text"
                     name="identificador"
-                    placeholder="Username"
+                    placeholder="Ingresa tu usuario"
                     className="form-input"
                     value={formData.identificador}
                     onChange={handleChange}
@@ -179,13 +169,13 @@ const Login = ({ onLogin }) => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="contrasenaUsuario" className="form-label">Password</label>
+                  <label htmlFor="contrasenaUsuario" className="form-label">Contraseña</label>
                   <div className="password-wrapper">
                     <input
                       id="contrasenaUsuario"
                       type={showPassword ? 'text' : 'password'}
                       name="contrasenaUsuario"
-                      placeholder="Password"
+                      placeholder="Ingresa tu contraseña"
                       className="form-input"
                       value={formData.contrasenaUsuario}
                       onChange={handleChange}
@@ -205,13 +195,13 @@ const Login = ({ onLogin }) => {
                 </div>
 
                 {error && (
-                  <div className="error-message" role="alert" aria-live="assertive">
+                  <div className="error-message" role="alert">
                     {error}
                   </div>
                 )}
 
                 <div className="forgot-password">
-                  <a href="/recuperar-contraseña" className="forgot-link">Forget Password?</a>
+                  <a href="/recuperar-contraseña" className="forgot-link">¿Olvidaste tu contraseña?</a>
                 </div>
 
                 <button
@@ -219,17 +209,17 @@ const Login = ({ onLogin }) => {
                   className={`login-button ${loading ? 'loading' : ''}`}
                   disabled={loading}
                 >
-                  {loading ? 'Iniciando sesión...' : 'Login'}
+                  {loading ? 'Iniciando...' : 'Entrar'}
                 </button>
 
                 <div className="signup-section">
-                  <span>Don't Never ea accesier? </span>
-                  <button 
-                    type="button" 
-                    className="signup-link" 
+                  <span>¿No tienes cuenta? </span>
+                  <button
+                    type="button"
+                    className="signup-link"
                     onClick={() => setIsLoginView(false)}
                   >
-                    Sign Up
+                    Regístrate
                   </button>
                 </div>
               </form>
@@ -237,22 +227,22 @@ const Login = ({ onLogin }) => {
           </div>
         </div>
       ) : (
-        // Vista de Registro - Pantalla completa centrada
+        // Vista de registro
         <div className="register-container">
           <div className="register-card">
             <div className="register-header">
-              <h2 className="register-title">Library Login</h2>
-              <div className="register-subtitle">Sé uno de nosotros</div>
+              <h2 className="register-title">Crear cuenta</h2>
+              <div className="register-subtitle">Únete hoy</div>
             </div>
 
             <form className="register-form" onSubmit={handleRegisterSubmit} noValidate>
               <div className="form-group">
-                <label htmlFor="fullName" className="form-label">Full Name</label>
+                <label htmlFor="fullName" className="form-label">Nombre completo</label>
                 <input
                   id="fullName"
                   type="text"
                   name="fullName"
-                  placeholder="Full Name"
+                  placeholder="Ingresa tu nombre completo"
                   className="form-input"
                   value={registerData.fullName}
                   onChange={handleRegisterChange}
@@ -261,12 +251,12 @@ const Login = ({ onLogin }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="email" className="form-label">Email</label>
+                <label htmlFor="email" className="form-label">Correo electrónico</label>
                 <input
                   id="email"
                   type="email"
                   name="email"
-                  placeholder="Email"
+                  placeholder="Ingresa tu correo"
                   className="form-input"
                   value={registerData.email}
                   onChange={handleRegisterChange}
@@ -275,13 +265,13 @@ const Login = ({ onLogin }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="registerPassword" className="form-label">Password</label>
+                <label htmlFor="registerPassword" className="form-label">Contraseña</label>
                 <div className="password-wrapper">
                   <input
                     id="registerPassword"
                     type={showRegisterPassword ? 'text' : 'password'}
                     name="password"
-                    placeholder="Password"
+                    placeholder="Crea una contraseña"
                     className="form-input"
                     value={registerData.password}
                     onChange={handleRegisterChange}
@@ -299,13 +289,13 @@ const Login = ({ onLogin }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+                <label htmlFor="confirmPassword" className="form-label">Confirmar contraseña</label>
                 <div className="password-wrapper">
                   <input
                     id="confirmPassword"
                     type={showRegisterConfirmPassword ? 'text' : 'password'}
                     name="confirmPassword"
-                    placeholder="Confirm Password"
+                    placeholder="Confirma tu contraseña"
                     className="form-input"
                     value={registerData.confirmPassword}
                     onChange={handleRegisterChange}
@@ -332,31 +322,28 @@ const Login = ({ onLogin }) => {
                     required
                   />
                   <span className="checkmark"></span>
-                  Apros to be Terms & Privacy
+                  Acepto los términos y la política de privacidad
                 </label>
               </div>
 
               {error && (
-                <div className="error-message" role="alert" aria-live="assertive">
+                <div className="error-message" role="alert">
                   {error}
                 </div>
               )}
 
-              <button
-                type="submit"
-                className="register-button"
-              >
-                Sign
+              <button type="submit" className="register-button">
+                Crear cuenta
               </button>
 
               <div className="login-section">
                 <span>¿Ya tienes cuenta? </span>
-                <button 
-                  type="button" 
-                  className="login-link" 
+                <button
+                  type="button"
+                  className="login-link"
                   onClick={() => setIsLoginView(true)}
                 >
-                  Login
+                  Iniciar sesión
                 </button>
               </div>
             </form>
