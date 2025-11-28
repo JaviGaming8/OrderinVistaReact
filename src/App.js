@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import { Moon, Sun } from "lucide-react";
-import OrdersView from "./pages/OrdersView";  // ✅ Aquí va tu consola visual de colas
+import OrdersView from "./pages/OrdersView";
 import HomeView from "./pages/HomeView";
 import Login from "./pages/Login";
-import "./App.css";
 import MensajesView from "./pages/MensajesView";
+import ProductsView from "./pages/ProductsView";   // ✅ IMPORTANTE
+import "./App.css";
+
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -14,7 +16,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Verifica sesión almacenada
+  // Verifica sesión almacenada
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     const userData = localStorage.getItem("userData");
@@ -34,13 +36,14 @@ function App() {
       setIsAuthenticated(false);
       setUser(null);
     }
+
     setLoading(false);
   }, []);
 
   const toggleDarkMode = () => setDarkMode(!darkMode);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
-  // ✅ Manejadores de login/logout
+  // Login
   const handleLogin = (userData, token) => {
     setIsAuthenticated(true);
     setUser(userData);
@@ -48,6 +51,7 @@ function App() {
     localStorage.setItem("userData", JSON.stringify(userData));
   };
 
+  // Logout
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUser(null);
@@ -56,20 +60,25 @@ function App() {
     localStorage.removeItem("userData");
   };
 
-  // ✅ Control de vistas
+  // Control de vistas
   const renderView = () => {
     switch (activeView) {
       case "Pedidos":
         return <OrdersView darkMode={darkMode} user={user} />;
-      case "Mensajes":  // 👈 aquí cambia "Pedidos" por "Mensajes"
+
+      case "Mensajes":
         return <MensajesView darkMode={darkMode} user={user} />;
+
+      case "Productos":  // 🔥 AQUÍ ESTABA EL ERROR
+        return <ProductsView darkMode={darkMode} user={user} />;
+
       case "Inicio":
       default:
         return <HomeView darkMode={darkMode} user={user} />;
     }
   };
 
-  // ✅ Cargando mientras verifica sesión
+  // Cargando sesión
   if (loading) {
     return (
       <div className={`app-container ${darkMode ? "dark" : ""}`}>
@@ -80,7 +89,7 @@ function App() {
     );
   }
 
-  // ✅ Si no está logueado → mostrar login
+  // No autenticado
   if (!isAuthenticated) {
     return (
       <div className={`app-container ${darkMode ? "dark" : ""}`}>
@@ -89,7 +98,7 @@ function App() {
     );
   }
 
-  // ✅ App principal autenticada
+  // App principal
   return (
     <div className={`app-container ${darkMode ? "dark" : ""}`}>
       {/* Toggle modo oscuro */}
@@ -105,7 +114,7 @@ function App() {
         </div>
       </div>
 
-      {/* Sidebar con logout */}
+      {/* Sidebar */}
       <Sidebar
         darkMode={darkMode}
         onSelectView={setActiveView}
@@ -117,8 +126,9 @@ function App() {
 
       {/* Contenido principal */}
       <main
-        className={`main-content ${sidebarOpen ? "with-sidebar" : "collapsed-sidebar"
-          }`}
+        className={`main-content ${
+          sidebarOpen ? "with-sidebar" : "collapsed-sidebar"
+        }`}
       >
         {renderView()}
       </main>

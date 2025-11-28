@@ -8,13 +8,16 @@ import {
   Settings,
   LogOut,
   Menu,
+  Package, 
 } from "lucide-react";
+
 import "./Sidebar.css";
 
 const Sidebar = ({ darkMode, onSelectView, open, toggleSidebar }) => {
   const menuItems = [
     { icon: <Home size={22} />, label: "Inicio" },
     { icon: <ShoppingBag size={22} />, label: "Pedidos" },
+    { icon: <Package size={22} />, label: "Productos" },
     { icon: <MessageSquare size={22} />, label: "Mensajes" },
     { icon: <Calendar size={22} />, label: "Agenda" },
     { icon: <BarChart size={22} />, label: "Reportes" },
